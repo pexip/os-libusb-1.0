@@ -1,0 +1,51 @@
+Description: Fix an API (not ABI) break in libusb_has_capability
+ Upstream changed the libusb_has_capability API between 1.0.9-rc3
+ and the final release, this patch fixes us to be compatible in
+ case people build against this RC version.
+Author: Adam Conrad <adconrad@ubuntu.com>
+Origin: upstream
+
+--- libusb-1.0-1.0.9~rc3.orig/libusb/core.c
++++ libusb-1.0-1.0.9~rc3/libusb/core.c
+@@ -1665,18 +1665,17 @@ void API_EXPORTED libusb_exit(struct lib
+ }
+ 
+ /** \ingroup misc
+- * Check if the running library has a given capability.
++ * Check at runtime if the loaded library has a given capability.
+  *
+  * \param capability the \ref libusb_capability to check for
+  * \returns 1 if the running library has the capability, 0 otherwise
+  */
+ int API_EXPORTED libusb_has_capability(uint32_t capability)
+ {
+-	switch (capability) {
+-	case LIBUSB_CAN_GET_DEVICE_SPEED:
++	enum libusb_capability cap = capability;
++	switch (cap) {
++	case LIBUSB_CAP_HAS_CAPABILITY:
+ 		return 1;
+-	default:
+-		break;
+ 	}
+ 	return 0;
+ }
+--- libusb-1.0-1.0.9~rc3.orig/libusb/libusb.h
++++ libusb-1.0-1.0.9~rc3/libusb/libusb.h
+@@ -892,13 +892,13 @@ struct libusb_transfer {
+ };
+ 
+ /** \ingroup misc
+- * Capabilities supported by this instance of libusb. Test if the running
++ * Capabilities supported by this instance of libusb. Test if the loaded
+  * library supports a given capability by calling
+  * \ref libusb_has_capability().
+  */
+ enum libusb_capability {
+-	/** The libusb_get_device_speed() API is available. */
+-	LIBUSB_CAN_GET_DEVICE_SPEED = 0,
++	/** The libusb_has_capability() API is available. */
++	LIBUSB_CAP_HAS_CAPABILITY = 0,
+ };
+ 
+ int LIBUSB_CALL libusb_init(libusb_context **ctx);
