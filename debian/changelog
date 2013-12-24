@@ -1,3 +1,9 @@
+libusb-1.0 (2:1.0.9~rc3-2ubuntu1pexip1) pexip; urgency=low
+
+  * Prepare Pexip packaging
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 24 Dec 2013 22:18:40 +0000
+
 libusb-1.0 (2:1.0.9~rc3-2ubuntu1) precise; urgency=low
 
   * Apply 01-fix-broken-RC-API.diff from upstream to fix an API
